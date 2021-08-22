@@ -53,25 +53,6 @@ void mostra_matriz_esparsa( MatrizEsparsa m){
         le_valor(m.multiLista, &linha, i);
         int col_atual = 0;
         vazio = lista_vazia(linha);
-        /*
-        if(vazio){
-            for(k = 0; k < m.numColunas; k++)
-                printf("%3d", 0);
-            printf("\n");
-        }else{
-            for(j=0;j<linha.qtd;j++){
-                vazio = le_valor( linha, &x, j);
-                // printf("vazio: %d\n", vazio);
-                if(vazio){
-                    printf("%3d", 0);
-                }else{
-                    printf("%3d", x.info);
-                }
-                col_atual++;
-            }
-            printf("\n");
-        }
-        */
         for(j=0;j<linha.qtd;j++){
             vazio = le_valor( linha, &x, j);
             for( k = col_atual ; k < x.coluna ; k++){
@@ -100,14 +81,20 @@ int get_matriz_esparsa( MatrizEsparsa *m, int lin, int col){
     Lista l;
     le_valor( m->multiLista, &l,  lin);
     EntradaMatriz x;
+    x.coluna = col;
+    int i = busca( l, &x, compara_matriz_esparsa);
+    le_valor( l, &x, i);
+    return x.info;
+    /*
     for(int i = 0; i <= col; i++){
         le_valor( l, &x, i );
         if(x.coluna == col) return x.info;
     }
     return 0;
+    */
 }
 
-MatrizEsparsa soma_matrizes_esparsa( MatrizEsparsa *a, MatrizEsparsa *b, int lin, int col ){
+MatrizEsparsa soma_matrizes_esparsa( MatrizEsparsa a, MatrizEsparsa b, int lin, int col ){
     int i, j, soma, val1, val2;
     Lista l1, l2;
     EntradaMatriz x1, x2;
@@ -115,12 +102,12 @@ MatrizEsparsa soma_matrizes_esparsa( MatrizEsparsa *a, MatrizEsparsa *b, int lin
     inicializa_matriz_esparsa(&m,lin,col);
     for(i = 0; i < lin; i++){
         for(j = 0; j < col; j++){
-            val2 = get_matriz_esparsa( b, i, j );
-            val1 = get_matriz_esparsa( a, i, j );
-            printf("i: %d j: %d val1: %d val2: %d\n", i,j,val1,val2);
+            val1 = get_matriz_esparsa( &a, i, j );
+            val2 = get_matriz_esparsa( &b, i, j );
             soma = val1 + val2;
-            if(soma)
+            if(soma){
                 set_matriz_esparsa(&m,i,j,soma);
+            }
         }
     }
     return m;
